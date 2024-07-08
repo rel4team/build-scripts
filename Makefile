@@ -19,7 +19,7 @@ root-task:
 #		--mount type=bind,src=$(abspath ../),dst=/work \
 #		rust-root-task-demo bash
 
-	cd ../root-task-demo && make -C docker/ rm-container && ARCH=aarch64 make -C docker/ run
+	cd ../root-task-demo && make -C docker/ rm-container && ARCH=$(ARCH) make -C docker/ run
 
 	for id in $$(docker ps -aq -f "name=^rust-root-task-demo$$"); do \
 		docker rm -f rust-root-task-demo; \
