@@ -31,4 +31,17 @@ root-task:
 sel4-test:
 	cd .. && docker run -v ".:/rel4-test:z" yfblock/rel4-dev:1.2 sh -c "cd /rel4-test/rel4_kernel && ./build.py -p $(PLATFORM)"
 	cd ../rel4_kernel/build && ./simulate
-.PHONY: all root-task sel4-test
+
+debug:
+	cd .. && docker run -v ".:/rel4-test:z" yfblock/rel4-dev:1.2 sh -c "cd /rel4-test/rel4_kernel && ./build.py -p $(PLATFORM)"
+	cd ../rel4_kernel/build && ./simulate -d
+
+gdb:
+	gdb ../rel4_kernel/build/rel4_kernel/build/images/sel4test-driver-image-arm-qemu-arm-virt \
+	-ex 'target remote localhost:1234' \
+	-ex 'disp /16i $$pc'
+
+fmt:
+	cd ../rel4_kernel/ && cargo fmt
+
+.PHONY: all root-task sel4-test debug gdb fmt
