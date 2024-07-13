@@ -44,4 +44,7 @@ gdb:
 fmt:
 	cd ../rel4_kernel/ && cargo fmt
 
-.PHONY: all root-task sel4-test debug gdb fmt
+clean:
+	rm -rf ../rel4_kernel/build/
+
+.PHONY: all root-task sel4-test debug gdb fmt clean
