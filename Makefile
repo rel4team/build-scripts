@@ -29,7 +29,13 @@ root-task:
 		rust-root-task-demo bash /work/build-scripts/mi-dev-build.sh
 
 sel4-test:
-	cd .. && docker run -v ".:/rel4-test:z" yfblock/rel4-dev:1.2 sh -c "cd /rel4-test/rel4_kernel && ./build.py -p $(PLATFORM)"
+	@if [[ $$(docker ps -aq -f "name=^sel4test-$(PLATFORM)$$" | wc -l) -gt 0 ]]; then \
+		docker start -a $$(docker ps -aq -f "name=^sel4test-$(PLATFORM)$$"); \
+	else \
+		cd .. && docker run --name "sel4test-$(PLATFORM)" \
+			-v ".:/rel4-test:z" yfblock/rel4-dev:1.2 \
+			sh -c "cd /rel4-test/rel4_kernel && ./build.py -p $(PLATFORM)"; \
+	fi
 	cd ../rel4_kernel/build && ./simulate
 
 debug:
