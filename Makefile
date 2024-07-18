@@ -1,3 +1,5 @@
+SHELL := /bin/bash
+
 ARCH ?= riscv64
 ifeq ($(ARCH), riscv64)
 PLATFORM := spike
@@ -18,15 +20,18 @@ root-task:
 #	docker run -it --name rust-root-task-demo \
 #		--mount type=bind,src=$(abspath ../),dst=/work \
 #		rust-root-task-demo bash
-
-	cd ../root-task-demo && make -C docker/ rm-container && ARCH=$(ARCH) make -C docker/ run
-
-	for id in $$(docker ps -aq -f "name=^rust-root-task-demo$$"); do \
-		docker rm -f rust-root-task-demo; \
-	done
-	docker run -it --name rust-root-task-demo \
-		--mount type=bind,src=$(abspath ../),dst=/work \
-		rust-root-task-demo bash /work/build-scripts/mi-dev-build.sh
+	@if [[ $$(docker ps -aq -f "name=rust-root-task-demo" | wc -l) -gt 0 ]]; then \
+		$$(docker start rust-root-task-demo) ; \
+		cd ../root-task-demo && ARCH=$(ARCH)  make -C docker/ exec ; \
+	else \
+		cd ../root-task-demo && ARCH=$(ARCH) make -C docker/ run ; ARCH=$(ARCH)  make -C docker/ exec ; \
+	fi
+	# for id in $$(docker ps -aq -f "name=^rust-root-task-demo"); do \
+	# 	docker rm -f rust-root-task-demo; \
+	# done
+	# docker run -it --name rust-root-task-demo \
+	# 	--mount type=bind,src=$(abspath ../),dst=/work \
+	# 	rust-root-task-demo bash /work/build-scripts/mi-dev-build.sh
 
 sel4-test:
 	@if [[ $$(docker ps -aq -f "name=^sel4test-$(PLATFORM)$$" | wc -l) -gt 0 ]]; then \
@@ -49,6 +54,9 @@ gdb:
 
 fmt:
 	cd ../rel4_kernel/ && cargo fmt
+
+just-test:
+	cd ../rel4_kernel/build && ./simulate
 
 clean:
 	rm -rf ../rel4_kernel/build/
