@@ -41,7 +41,9 @@ sel4-test:
 			-v ".:/rel4-test:z" yfblock/rel4-dev:1.2 \
 			sh -c "cd /rel4-test/rel4_kernel && ./build.py -p $(PLATFORM)"; \
 	fi
+	@-docker rmi -f $(docker images | grep <none> | awk '{print $3}') > /dev/null 2>&1
 	cd ../rel4_kernel/build && ./simulate
+	@-docker rm sel4test-$(PLATFORM) > /dev/null
 
 debug:
 	cd .. && docker run -v ".:/rel4-test:z" yfblock/rel4-dev:1.2 sh -c "cd /rel4-test/rel4_kernel && ./build.py -p $(PLATFORM)"
