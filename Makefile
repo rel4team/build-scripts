@@ -6,6 +6,7 @@ PLATFORM := spike
 else ifeq ($(ARCH), aarch64)
 PLATFORM := qemu-arm-virt
 endif
+MCS ?= off
 all:
 
 root-task:
@@ -42,7 +43,7 @@ sel4-test:
 	else \
 		cd .. && docker run --name "sel4test-$(PLATFORM)" \
 			-v ".:/rel4-test:z" yfblock/rel4-dev:1.2 \
-			sh -c "cd /rel4-test/rel4_kernel && ./build.py -p $(PLATFORM)"; \
+			sh -c "cd /rel4-test/rel4_kernel && ./build.py -p $(PLATFORM) -m $(MCS)"; \
 	fi
 	cd ../rel4_kernel/build && ./simulate
 	@-docker rm sel4test-$(PLATFORM) > /dev/null
