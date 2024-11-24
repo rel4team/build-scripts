@@ -43,6 +43,8 @@ function main() {
         -e DOCKER_USER_ID="${uid}" \
         -e DOCKER_GRP="${group}" \
         -e DOCKER_GRP_ID="${gid}" \
+        # -e HTTP_PROXY=http://127.0.0.1:7890 \
+        # -e HTTPS_PROXY=http://127.0.0.1:7890 \
         -v $workspace:/workspace \
         -w /workspace \
         --hostname rel4_dev_env \
