@@ -37,14 +37,16 @@ function main() {
     local group="$(id -g -n)"
     local gid="$(id -g)"
 
+    # -e HTTP_PROXY=http://127.0.0.1:7890 \
+    # -e HTTPS_PROXY=http://127.0.0.1:7890 \
+    # You can add proxy setting in docker run if you encounter network problem
+
     docker run -itd \
         --name "${CONTAINER_NAME}" \
         -e DOCKER_USER="${user}" \
         -e DOCKER_USER_ID="${uid}" \
         -e DOCKER_GRP="${group}" \
         -e DOCKER_GRP_ID="${gid}" \
-        # -e HTTP_PROXY=http://127.0.0.1:7890 \
-        # -e HTTPS_PROXY=http://127.0.0.1:7890 \
         -v $workspace:/workspace \
         -w /workspace \
         --hostname rel4_dev_env \
